@@ -4,6 +4,7 @@ import 'features/dashboard/dashboard_screen.dart';
 import 'features/analytics/analytics_screen.dart';
 import 'features/alerts/alerts_screen.dart';
 import 'features/settings/settings_screen.dart';
+import 'core/constants/constants.dart';
 
 void main() {
   runApp(const SmartWaterApp());
@@ -42,7 +43,6 @@ class _SmartWaterAppState extends State<SmartWaterApp> {
   }
 }
 
-/// Main navigation with bottom navigation bar.
 class MainNavigation extends StatefulWidget {
   final bool isDarkMode;
   final VoidCallback onThemeToggle;
@@ -62,49 +62,172 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          const DashboardScreen(),
-          const AnalyticsScreen(),
-          const AlertsScreen(),
-          SettingsScreen(
-            isDarkMode: widget.isDarkMode,
-            onThemeToggle: widget.onThemeToggle,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 900;
+        final isMedium = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
+
+        return Scaffold(
+          body: Row(
+            children: [
+              if (isWide || isMedium)
+                _buildSidebar(isWide),
+              Expanded(
+                child: IndexedStack(
+                  index: _currentIndex,
+                  children: [
+                    const DashboardScreen(),
+                    const AnalyticsScreen(),
+                    const AlertsScreen(),
+                    SettingsScreen(
+                      isDarkMode: widget.isDarkMode,
+                      onThemeToggle: widget.onThemeToggle,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+          bottomNavigationBar: (!isWide && !isMedium)
+              ? NavigationBar(
+                  selectedIndex: _currentIndex,
+                  onDestinationSelected: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  destinations: _buildDestinations(),
+                )
+              : null,
+        );
+      },
+    );
+  }
+
+  Widget _buildSidebar(bool extended) {
+    final isDark = widget.isDarkMode;
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        border: Border(
+          right: BorderSide(
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200,
+            width: 1,
+          ),
+        ),
       ),
-      bottomNavigationBar: NavigationBar(
+      child: NavigationRail(
+        extended: extended,
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+        backgroundColor: Colors.transparent,
+        labelType: extended ? null : NavigationRailLabelType.all,
+        leading: Column(
+          children: [
+            const SizedBox(height: 20),
+            _buildLogo(extended),
+            const SizedBox(height: 30),
+          ],
+        ),
+        trailing: Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: widget.onThemeToggle,
+                icon: Icon(widget.isDarkMode ? Icons.light_mode : Icons.dark_mode),
+                tooltip: 'Toggle Theme',
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics_outlined),
-            selectedIcon: Icon(Icons.analytics),
-            label: 'Analytics',
+        ),
+        destinations: _buildRailDestinations(),
+      ),
+    );
+  }
+
+  Widget _buildLogo(bool extended) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primaryBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.water_drop, color: AppColors.primaryBlue),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.notifications_outlined),
-            selectedIcon: Icon(Icons.notifications),
-            label: 'Alerts',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+          if (extended) ...[
+            const SizedBox(width: 12),
+            const Text(
+              'SmartWater',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  List<NavigationDestination> _buildDestinations() {
+    return const [
+      NavigationDestination(
+        icon: Icon(Icons.dashboard_outlined),
+        selectedIcon: Icon(Icons.dashboard),
+        label: 'Dashboard',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.analytics_outlined),
+        selectedIcon: Icon(Icons.analytics),
+        label: 'Analytics',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.notifications_outlined),
+        selectedIcon: Icon(Icons.notifications),
+        label: 'Alerts',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.settings_outlined),
+        selectedIcon: Icon(Icons.settings),
+        label: 'Settings',
+      ),
+    ];
+  }
+
+  List<NavigationRailDestination> _buildRailDestinations() {
+    return const [
+      NavigationRailDestination(
+        icon: Icon(Icons.dashboard_outlined),
+        selectedIcon: Icon(Icons.dashboard),
+        label: Text('Dashboard'),
+      ),
+      NavigationRailDestination(
+        icon: Icon(Icons.analytics_outlined),
+        selectedIcon: Icon(Icons.analytics),
+        label: Text('Analytics'),
+      ),
+      NavigationRailDestination(
+        icon: Icon(Icons.notifications_outlined),
+        selectedIcon: Icon(Icons.notifications),
+        label: Text('Alerts'),
+      ),
+      NavigationRailDestination(
+        icon: Icon(Icons.settings_outlined),
+        selectedIcon: Icon(Icons.settings),
+        label: Text('Settings'),
+      ),
+    ];
   }
 }

@@ -104,6 +104,7 @@ class DashboardData {
 
 /// Represents an alert from the system.
 class Alert {
+  final String id;
   final String type;
   final int priority;
   final String priorityLabel;
@@ -118,6 +119,7 @@ class Alert {
   final String cause;
 
   const Alert({
+    required this.id,
     required this.type,
     required this.priority,
     required this.priorityLabel,
@@ -134,6 +136,7 @@ class Alert {
 
   factory Alert.fromJson(Map<String, dynamic> json) {
     return Alert(
+      id: json['id']?.toString() ?? '${json['type']}_${json['timestamp']}_${json['device_id']}',
       type: json['type'] ?? '',
       priority: json['priority'] ?? 1,
       priorityLabel: json['priority_label'] ?? 'Low',

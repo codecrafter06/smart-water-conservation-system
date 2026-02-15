@@ -208,82 +208,186 @@ class _DashboardScreenState extends State<DashboardScreen>
     final data = _dashboardData!;
     final tank = data.tankStatus;
 
-    return SliverPadding(
-      padding: const EdgeInsets.all(20),
-      sliver: SliverList(
-        delegate: SliverChildListDelegate([
-          // Tank Selector
-          _buildTankSelector()
-              .animate()
-              .fadeIn(duration: 400.ms),
+    return SliverLayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.crossAxisExtent > 1100;
+        final isMedium = constraints.crossAxisExtent > 700;
 
-          const SizedBox(height: 24),
+        return SliverPadding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isWide ? 60 : (isMedium ? 40 : 20),
+            vertical: 24,
+          ),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              if (isWide) _buildDesktopHeader(data),
+              
+              const SizedBox(height: 32),
+              
+              if (isWide)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Left Column: Core Status
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildTankSelector(),
+                          const SizedBox(height: 32),
+                          Center(
+                            child: AnimatedWaterTank(
+                              level: tank.waterLevelPercent,
+                              size: 340,
+                            ).animate().scale(duration: 800.ms, curve: Curves.easeOutBack),
+                          ),
+                          const SizedBox(height: 48),
+                          _buildQuickActions(),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 48),
+                    // Right Column: Intelligence & Metrics
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildStatusBanner(data),
+                          const SizedBox(height: 24),
+                          if (_prediction != null) _buildPredictionCard(_prediction!),
+                          const SizedBox(height: 32),
+                          Text('System Metrics', style: Theme.of(context).textTheme.titleLarge),
+                          const SizedBox(height: 20),
+                          _buildMetricCards(tank),
+                          const SizedBox(height: 32),
+                          _buildInsightsSection(),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              else ...[
+                // Tablet/Mobile Stack
+                _buildTankSelector().animate().fadeIn(),
+                const SizedBox(height: 32),
+                if (isMedium)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            AnimatedWaterTank(
+                              level: tank.waterLevelPercent,
+                              size: 240,
+                            ).animate().scale(),
+                            const SizedBox(height: 32),
+                            _buildQuickActions(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 32),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            _buildStatusBanner(data),
+                            const SizedBox(height: 16),
+                            if (_prediction != null) _buildPredictionCard(_prediction!),
+                            const SizedBox(height: 16),
+                            _buildMetricCards(tank),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                else ...[
+                  _buildStatusBanner(data),
+                  const SizedBox(height: 24),
+                  if (_prediction != null) _buildPredictionCard(_prediction!),
+                  const SizedBox(height: 40),
+                  Center(
+                    child: AnimatedWaterTank(
+                      level: tank.waterLevelPercent,
+                      size: 220,
+                    ),
+                  ).animate().scale(),
+                  const SizedBox(height: 40),
+                  _buildMetricCards(tank),
+                  const SizedBox(height: 24),
+                  _buildQuickActions(),
+                  const SizedBox(height: 24),
+                  _buildInsightsSection(),
+                ],
+              ],
 
-          // Status Banner
-          _buildStatusBanner(data)
-              .animate()
-              .fadeIn(delay: 100.ms)
-              .slideY(begin: 0.2, end: 0),
+              if (!isWide) ...[
+                const SizedBox(height: 32),
+                if (data.alerts.isNotEmpty) _buildAlertsPreview(data.alerts),
+              ],
+              
+              const SizedBox(height: 80),
+            ]),
+          ),
+        );
+      },
+    );
+  }
 
-          const SizedBox(height: 24),
-
-          // Predictive Water Shortage Warning
-          if (_prediction != null)
-            _buildPredictionCard(_prediction!)
-                .animate()
-                .fadeIn(delay: 150.ms)
-                .slideY(begin: 0.2, end: 0),
-
-          if (_prediction != null)
-            const SizedBox(height: 24),
-
-          // Main Tank Display
-          Center(
-            child: AnimatedWaterTank(
-              level: tank.waterLevelPercent,
-              size: 200,
+  Widget _buildDesktopHeader(DashboardData data) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Dashboard Overview',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.5,
+                  ),
             ),
-          )
-              .animate()
-              .fadeIn(delay: 200.ms)
-              .scale(begin: const Offset(0.8, 0.8), end: const Offset(1, 1)),
+            const SizedBox(height: 4),
+            Text(
+              'Real-time monitoring and control system',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            _buildHeaderStat('ACTIVE DEVICES', '12'),
+            const SizedBox(width: 24),
+            _buildHeaderStat('SYSTEM UPTIME', '99.9%'),
+          ],
+        ),
+      ],
+    );
+  }
 
-          const SizedBox(height: 32),
-
-          // Metric Cards Grid
-          _buildMetricCards(tank)
-              .animate()
-              .fadeIn(delay: 300.ms)
-              .slideY(begin: 0.2, end: 0),
-
-          const SizedBox(height: 24),
-
-          // Quick Actions
-          _buildQuickActions()
-              .animate()
-              .fadeIn(delay: 400.ms)
-              .slideY(begin: 0.2, end: 0),
-
-          const SizedBox(height: 24),
-
-          // Insights Section
-          _buildInsightsSection()
-              .animate()
-              .fadeIn(delay: 500.ms)
-              .slideY(begin: 0.2, end: 0),
-
-          const SizedBox(height: 24),
-
-          // Active Alerts Preview
-          if (data.alerts.isNotEmpty)
-            _buildAlertsPreview(data.alerts)
-                .animate()
-                .fadeIn(delay: 600.ms)
-                .slideY(begin: 0.2, end: 0),
-
-          const SizedBox(height: 40),
-        ]),
-      ),
+  Widget _buildHeaderStat(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                letterSpacing: 1.2,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryBlue,
+          ),
+        ),
+      ],
     );
   }
 
@@ -550,7 +654,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           children: [
             SizedBox(
               width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
-              height: 160,
+              height: 180,
               child: MetricCard(
                 title: 'Water Level',
                 value: tank.waterLevelPercent.toStringAsFixed(0),
@@ -564,7 +668,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             SizedBox(
               width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
-              height: 160,
+              height: 180,
               child: MetricCard(
                 title: 'Flow Rate',
                 value: tank.flowRateLpm.toStringAsFixed(1),
@@ -578,7 +682,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             SizedBox(
               width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
-              height: 160,
+              height: 180,
               child: MetricCard(
                 title: 'Capacity',
                 value: (tank.waterLevelPercent * 10).toStringAsFixed(0),
@@ -592,7 +696,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             SizedBox(
               width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
-              height: 160,
+              height: 180,
               child: MetricCard(
                 title: 'Efficiency',
                 value: '78',

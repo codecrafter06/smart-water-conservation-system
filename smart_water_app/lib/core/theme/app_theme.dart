@@ -7,85 +7,84 @@ ThemeData lightTheme() {
     useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: AppColors.primaryBlue,
-    scaffoldBackgroundColor: AppColors.backgroundLight,
+    scaffoldBackgroundColor: const Color(0xFFF8FAFC),
     colorScheme: const ColorScheme.light(
       primary: AppColors.primaryBlue,
       secondary: AppColors.waterBlue,
-      surface: AppColors.surfaceLight,
+      surface: Colors.white,
+      onSurface: AppColors.textPrimaryLight,
       error: AppColors.error,
     ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      centerTitle: true,
-      backgroundColor: AppColors.primaryBlue,
-      foregroundColor: Colors.white,
+      centerTitle: false,
+      backgroundColor: Colors.transparent,
+      foregroundColor: AppColors.textPrimaryLight,
       titleTextStyle: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: Colors.white,
-      ),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 2,
-      color: AppColors.cardLight,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        elevation: 2,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppColors.primaryBlue,
-      foregroundColor: Colors.white,
-      elevation: 4,
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: AppColors.surfaceLight,
-      selectedItemColor: AppColors.primaryBlue,
-      unselectedItemColor: AppColors.textSecondaryLight,
-      type: BottomNavigationBarType.fixed,
-      elevation: 8,
-    ),
-    textTheme: const TextTheme(
-      headlineLarge: TextStyle(
-        fontSize: 28,
+        fontSize: 22,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryLight,
       ),
-      headlineMedium: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
+    ),
+    canvasColor: Colors.white,
+    navigationRailTheme: const NavigationRailThemeData(
+      backgroundColor: Colors.white,
+      selectedIconTheme: IconThemeData(color: AppColors.primaryBlue, size: 28),
+      unselectedIconTheme: IconThemeData(color: Colors.grey, size: 24),
+      selectedLabelTextStyle: TextStyle(
+        color: AppColors.primaryBlue,
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+      unselectedLabelTextStyle: TextStyle(
+        color: Colors.grey,
+        fontSize: 13,
+      ),
+    ),
+    cardTheme: CardThemeData(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: Colors.grey.shade100, width: 1),
+      ),
+    ),
+    dividerTheme: DividerThemeData(
+      thickness: 1,
+      color: Colors.grey.shade100,
+    ),
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryLight,
+        letterSpacing: -1,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textPrimaryLight,
+        letterSpacing: -0.5,
       ),
       titleLarge: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryLight,
       ),
       titleMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
         color: AppColors.textPrimaryLight,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
         color: AppColors.textPrimaryLight,
+        height: 1.5,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
         color: AppColors.textSecondaryLight,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AppColors.primaryBlue,
+        height: 1.5,
       ),
     ),
   );
@@ -97,99 +96,85 @@ ThemeData darkTheme() {
     useMaterial3: true,
     brightness: Brightness.dark,
     primaryColor: AppColors.accentDark,
-    scaffoldBackgroundColor: AppColors.backgroundDark,
+    scaffoldBackgroundColor: const Color(0xFF0F172A), // Slate 900
     colorScheme: const ColorScheme.dark(
       primary: AppColors.accentDark,
       secondary: AppColors.accentMutedDark,
-      surface: AppColors.surfaceDark,
-      surfaceContainerHighest: AppColors.cardDark,
+      surface: Color(0xFF1E293B), // Slate 800
+      onSurface: AppColors.textPrimaryDark,
       error: AppColors.error,
       outline: AppColors.borderDark,
     ),
     appBarTheme: const AppBarTheme(
       elevation: 0,
-      centerTitle: true,
-      backgroundColor: AppColors.surfaceDark,
+      centerTitle: false,
+      backgroundColor: Colors.transparent,
       foregroundColor: AppColors.textPrimaryDark,
       titleTextStyle: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryDark,
+      ),
+    ),
+    canvasColor: const Color(0xFF1E293B),
+    navigationRailTheme: const NavigationRailThemeData(
+      backgroundColor: Color(0xFF1E293B),
+      selectedIconTheme: IconThemeData(color: AppColors.accentDark, size: 28),
+      unselectedIconTheme: IconThemeData(color: Colors.grey, size: 24),
+      selectedLabelTextStyle: TextStyle(
+        color: AppColors.accentDark,
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+      unselectedLabelTextStyle: TextStyle(
+        color: Colors.grey,
+        fontSize: 13,
       ),
     ),
     cardTheme: CardThemeData(
       elevation: 0,
-      color: AppColors.cardDark,
+      color: const Color(0xFF1E293B),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.borderDark, width: 1),
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: Color(0xFF334155), width: 1), // Slate 700
       ),
     ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        elevation: 0,
-        backgroundColor: AppColors.accentDark,
-        foregroundColor: AppColors.backgroundDark,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppColors.accentDark,
-      foregroundColor: AppColors.backgroundDark,
-      elevation: 0,
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: AppColors.surfaceDark,
-      selectedItemColor: AppColors.accentDark,
-      unselectedItemColor: AppColors.textSecondaryDark,
-      type: BottomNavigationBarType.fixed,
-      elevation: 0,
+    dividerTheme: const DividerThemeData(
+      thickness: 1,
+      color: Color(0xFF334155),
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: AppColors.textPrimaryDark,
+        letterSpacing: -1,
+      ),
+      headlineMedium: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryDark,
-      ),
-      headlineMedium: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textPrimaryDark,
-      ),
-      headlineSmall: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textPrimaryDark,
+        letterSpacing: -0.5,
       ),
       titleLarge: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
         color: AppColors.textPrimaryDark,
       ),
       titleMedium: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
         color: AppColors.textPrimaryDark,
       ),
       bodyLarge: TextStyle(
         fontSize: 16,
         color: AppColors.textPrimaryDark,
+        height: 1.5,
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
         color: AppColors.textSecondaryDark,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        color: AppColors.textSecondaryDark,
-      ),
-      labelLarge: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: AppColors.accentDark,
+        height: 1.5,
       ),
     ),
   );

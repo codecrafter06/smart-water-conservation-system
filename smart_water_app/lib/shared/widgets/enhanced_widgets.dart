@@ -809,14 +809,18 @@ class AlertDetailSheet extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
       decoration: BoxDecoration(
         color: isDark ? AppColors.surfaceDark : Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         border: isDark ? Border.all(color: AppColors.borderDark) : null,
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 40,
@@ -1026,7 +1030,8 @@ class AlertDetailSheet extends StatelessWidget {
               .slideY(begin: 0.3, end: 0),
         ],
       ),
-    )
+    ),
+  )
         .animate()
         .slideY(begin: 1, end: 0, duration: 400.ms, curve: Curves.easeOutCubic);
   }

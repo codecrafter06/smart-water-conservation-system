@@ -71,50 +71,154 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-        SliverAppBar(
-          expandedHeight: 160,
-          floating: true,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: const Text('Analytics', style: TextStyle(fontWeight: FontWeight.bold)),
-            background: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: -30,
-                    bottom: -20,
-                    child: Icon(Icons.analytics, size: 150, color: Colors.white.withOpacity(0.1)),
-                  ),
-                ],
-              ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 900;
+
+        return Scaffold(
+          body: _isLoading
+              ? _buildLoadingContent()
+              : _error != null
+                  ? _buildErrorContent()
+                  : RefreshIndicator(
+                      onRefresh: _loadAnalytics,
+                      child: CustomScrollView(
+                        slivers: [
+                          if (!isWide)
+                            _buildMobileAppBar()
+                          else
+                            _buildDesktopHeaderSliver(),
+                          
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWide ? 40 : 20,
+                                vertical: 20,
+                              ),
+                              child: _buildAnalyticsContent(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+        );
+      },
+    );
+  }
+
+  Widget _buildMobileAppBar() {
+    return SliverAppBar(
+      expandedHeight: 120,
+      floating: true,
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        title: const Text('Analytics', style: TextStyle(fontWeight: FontWeight.bold)),
+        background: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF11998e), Color(0xFF38ef7d)],
             ),
           ),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: const [
-              Tab(text: 'Week'),
-              Tab(text: '2 Weeks'),
-              Tab(text: 'Month'),
-            ],
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
+        ),
+      ),
+      bottom: _buildTabBar(),
+    );
+  }
+
+  Widget _buildDesktopHeaderSliver() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(40, 40, 40, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Consumption Analytics',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Historical usage patterns and AI predictions',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+                _buildDesktopTabControl(),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopTabControl() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildDesktopTab('7 Days', 0),
+          _buildDesktopTab('14 Days', 1),
+          _buildDesktopTab('30 Days', 2),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktopTab(String label, int index) {
+    final isSelected = _tabController.index == index;
+    return GestureDetector(
+      onTap: () {
+        _tabController.animateTo(index);
+        setState(() {});
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: isSelected
+              ? [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2))]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            color: isSelected ? AppColors.primaryBlue : Colors.grey,
           ),
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildTabBar() {
+    return TabBar(
+      controller: _tabController,
+      tabs: const [
+        Tab(text: '7D'),
+        Tab(text: '14D'),
+        Tab(text: '30D'),
       ],
-      body: _isLoading
-          ? _buildLoadingContent()
-          : _error != null
-              ? _buildErrorContent()
-              : _buildAnalyticsContent(),
+      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      indicatorColor: Colors.white,
     );
   }
 
@@ -151,53 +255,50 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Widget _buildAnalyticsContent() {
     final data = _analyticsData!;
 
-    return RefreshIndicator(
-      onRefresh: _loadAnalytics,
-      child: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          // Summary Cards
-          _buildSummaryCards(data)
-              .animate()
-              .fadeIn(duration: 400.ms),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Summary Cards
+        _buildSummaryCards(data)
+            .animate()
+            .fadeIn(duration: 400.ms),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 24),
 
-          // Water Level Trend Chart
-          _buildChartCard(
-            title: 'Water Level Trend',
-            icon: Icons.show_chart,
-            child: _buildAreaChart(data),
-          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0),
+        // Water Level Trend Chart
+        _buildChartCard(
+          title: 'Water Level Trend',
+          icon: Icons.show_chart,
+          child: _buildAreaChart(data),
+        ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 24),
 
-          // Daily Consumption Chart
-          _buildChartCard(
-            title: 'Daily Consumption',
-            icon: Icons.bar_chart,
-            child: _buildBarChart(data),
-          ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1, end: 0),
+        // Daily Consumption Chart
+        _buildChartCard(
+          title: 'Daily Consumption',
+          icon: Icons.bar_chart,
+          child: _buildBarChart(data),
+        ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1, end: 0),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 24),
 
-          // Usage Pattern
-          _buildUsagePattern().animate().fadeIn(delay: 600.ms),
+        // Usage Pattern
+        _buildUsagePattern().animate().fadeIn(delay: 600.ms),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 24),
 
-          // Predictions
-          _buildPredictions(data).animate().fadeIn(delay: 800.ms),
+        // Predictions
+        _buildPredictions(data).animate().fadeIn(delay: 800.ms),
 
-          const SizedBox(height: 24),
+        const SizedBox(height: 24),
 
-          // Conservation Report
-          if (_conservationReport != null)
-            _buildConservationReport(_conservationReport!).animate().fadeIn(delay: 900.ms),
+        // Conservation Report
+        if (_conservationReport != null)
+          _buildConservationReport(_conservationReport!).animate().fadeIn(delay: 900.ms),
 
-          const SizedBox(height: 40),
-        ],
-      ),
+        const SizedBox(height: 40),
+      ],
     );
   }
 

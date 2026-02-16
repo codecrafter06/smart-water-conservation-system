@@ -163,7 +163,7 @@ class _MainNavigationState extends State<MainNavigation> {
               color: AppColors.primaryBlue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.water_drop, color: AppColors.primaryBlue),
+            child: const Icon(Icons.water_drop, color: AppColors.primaryBlue),
           ),
           if (extended) ...[
             const SizedBox(width: 12),

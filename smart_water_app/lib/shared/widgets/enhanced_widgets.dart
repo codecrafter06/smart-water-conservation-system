@@ -376,7 +376,7 @@ class _AnimatedWaterTankState extends State<AnimatedWaterTank>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${widget.level.toStringAsFixed(0)}',
+                      widget.level.toStringAsFixed(0),
                       style: TextStyle(
                         fontSize: 48,
                         fontWeight: FontWeight.bold,
@@ -953,7 +953,7 @@ class AlertDetailSheet extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.lightbulb, color: AppColors.info, size: 20),
+                    const Icon(Icons.lightbulb, color: AppColors.info, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       'Suggested Action',
@@ -998,8 +998,8 @@ class AlertDetailSheet extends StatelessWidget {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Row(
-                          children: const [
+                        content: const Row(
+                          children: [
                             Icon(Icons.check_circle, color: Colors.white),
                             SizedBox(width: 12),
                             Text('Alert acknowledged'),

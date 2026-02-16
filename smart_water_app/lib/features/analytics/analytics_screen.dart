@@ -223,10 +223,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   Widget _buildLoadingContent() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
+    return const Padding(
+      padding: EdgeInsets.all(20),
       child: Column(
-        children: const [
+        children: [
           ShimmerLoading(width: double.infinity, height: 100, borderRadius: 16),
           SizedBox(height: 20),
           ShimmerLoading(width: double.infinity, height: 250, borderRadius: 16),
@@ -777,9 +777,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppColors.primaryBlue.withOpacity(0.3)),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Icon(Icons.psychology, size: 14, color: AppColors.primaryBlue),
                     SizedBox(width: 4),
                     Text(
@@ -997,7 +997,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               children: [
                 Row(
                   children: [
-                    Icon(Icons.insights, color: AppColors.info, size: 18),
+                    const Icon(Icons.insights, color: AppColors.info, size: 18),
                     const SizedBox(width: 8),
                     Text(
                       'Insights',
@@ -1014,7 +1014,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.check_circle, color: AppColors.success, size: 16),
+                          const Icon(Icons.check_circle, color: AppColors.success, size: 16),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -1038,7 +1038,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: AppColors.info, size: 18),
+                const Icon(Icons.info_outline, color: AppColors.info, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(

@@ -339,13 +339,13 @@ class _AlertsScreenState extends State<AlertsScreen> {
     return Column(
       children: [
         if (isWide) _buildDesktopHeader(),
-        Expanded(child: Center(child: CircularProgressIndicator())),
+        const Expanded(child: Center(child: CircularProgressIndicator())),
       ],
     );
   }
 
   Widget _buildEmptyState() {
-    return Center(child: Text('No alerts found'));
+    return const Center(child: Text('No alerts found'));
   }
 
   Widget _buildAlertsContentSliver() {
@@ -438,9 +438,9 @@ class _AlertsScreenState extends State<AlertsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (_, __) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: const ShimmerLoading(width: double.infinity, height: 100, borderRadius: 20),
+          (_, __) => const Padding(
+            padding: EdgeInsets.only(bottom: 12),
+            child: ShimmerLoading(width: double.infinity, height: 100, borderRadius: 20),
           ),
           childCount: 5,
         ),
@@ -481,7 +481,7 @@ class _AlertsScreenState extends State<AlertsScreen> {
                   color: AppColors.success.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.check_circle_outline, size: 80, color: AppColors.success)
+                child: const Icon(Icons.check_circle_outline, size: 80, color: AppColors.success)
                     .animate(onPlay: (c) => c.repeat())
                     .shimmer(duration: 2000.ms, delay: 1000.ms),
               ),

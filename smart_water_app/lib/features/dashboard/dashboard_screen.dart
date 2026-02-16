@@ -160,8 +160,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           const SizedBox(height: 24),
           const ShimmerLoading(width: double.infinity, height: 200, borderRadius: 24),
           const SizedBox(height: 24),
-          Row(
-            children: const [
+          const Row(
+            children: [
               Expanded(child: ShimmerLoading(width: double.infinity, height: 140, borderRadius: 24)),
               SizedBox(width: 16),
               Expanded(child: ShimmerLoading(width: double.infinity, height: 140, borderRadius: 24)),
@@ -627,7 +627,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             child: Row(
               children: [
-                Icon(Icons.lightbulb, color: AppColors.info, size: 18),
+                const Icon(Icons.lightbulb, color: AppColors.info, size: 18),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -697,13 +697,13 @@ class _DashboardScreenState extends State<DashboardScreen>
             SizedBox(
               width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
               height: 180,
-              child: MetricCard(
+              child: const MetricCard(
                 title: 'Efficiency',
                 value: '78',
                 unit: '%',
                 icon: Icons.eco,
-                primaryColor: const Color(0xFF4facfe),
-                secondaryColor: const Color(0xFF00f2fe),
+                primaryColor: Color(0xFF4facfe),
+                secondaryColor: Color(0xFF00f2fe),
                 trend: '+5.2%',
                 isPositiveTrend: true,
               ),
@@ -815,7 +815,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       children: [
                         Text(
                           '$savedWater L',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: AppColors.success,
@@ -844,7 +844,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           '12% Less',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -871,7 +871,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           children: [
                             Text(
                               '$savedWater L',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.success,
@@ -888,10 +888,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Column(
+                    const Column(
                       children: [
-                        const Icon(Icons.trending_down, color: AppColors.success, size: 32),
-                        const SizedBox(height: 8),
+                        Icon(Icons.trending_down, color: AppColors.success, size: 32),
+                        SizedBox(height: 8),
                         Text(
                           '12% Less vs Last Week',
                           style: TextStyle(
